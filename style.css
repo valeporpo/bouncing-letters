@@ -1,18 +1,18 @@
 body > div.title-container {
    position: absolute;
-   top: 50%;
+   top: 70%;
    left: 50%;
    transform: translate(-50%, -50%);
-   font-size: calc(12px + 3.5vw);
+   font-size: calc(16px + 3.5vw);
    font-weight: 600;
-   border: 1px solid black;
    display: flex;
    align-items: flex-end;
  }
  
 body > div.title-container > div.title-character {
-   border: 1px solid black;
-   transform: matrix(1, 0, 0, 0.5, 0, 0);
+   transform: matrix(1, 0, 0, 1, 0, 20);
+   transform-origin: bottom;
+   margin-left: 10px;
 }
  
 @media only screen and (max-width: 254px) {
