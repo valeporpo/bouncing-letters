@@ -1,31 +1,57 @@
 let letters = document.querySelectorAll('body div.title-container div.title-character')
-console.log(letters)
+const minHeight = 0
+const maxHeight = -200
+const minScale = 0.5
+const maxScale = 3
+const scaleStep = 0.01
 
 let animate = setInterval(function() {
-    /*let fromDegree = letters[currentIndex].style.transform.substr(8)
-    let degree = Number(fromDegree.substr(0, fromDegree.length - 4))
-    if(degree == 270)
-      changeColor(currentIndex)
-    if(degree < 360) {
-      newDegree = degree + 1
-      changeRotation(currentIndex, newDegree)
-    } else {
-      newDegree = 0
-      changeRotation(currentIndex, newDegree)
-      currentIndex = changeLetter(currentIndex)
-    }*/
     letters.forEach(function(letter){
-        console.log(getScale(letter))
+        let currentScaleY = getScaleY(letter)
+        if(letter.dataset.direction == 'is-expanding') {
+          if(currentScaleY >= minScale && currentScaleY < maxScale) { 
+             let newScale = Number(currentScaleY) + scaleStep
+             let newTranslate = computeTranslateY(newScale, letter)  
+             letter.style.transform = 'matrix(1, 0, 0, ' + newScale + ', 0, '+newTranslate+')'
+          }
+          if(currentScaleY == maxScale) {
+             letter.dataset.direction = 'is-contracting'
+          }
+        } else if(letter.dataset.direction == 'is-contracting') {
+           if(currentScaleY > minScale && currentScaleY <= maxScale) {
+             let newScale = Number(currentScaleY) - scaleStep
+             let newTranslate = computeTranslateY(newScale, letter)
+             letter.style.transform = 'matrix(1, 0, 0, ' + newScale + ', 0, ' + newTranslate + ')'
+           }
+           if(currentScaleY == minScale) {
+             letter.dataset.direction = 'is-expanding'
+           }
+        }
     })
-    
-}, 1)
+}, 8)
 
-function getScale(el) {
+function getScaleY(el) {
     let style = window.getComputedStyle(el)
     let matrix = new WebKitCSSMatrix(style.transform)
-    /*let scaleObj = {
-        'x' : matrix.a,
-        'y' : matrix.d,
-    }*/
     return matrix.d
+}
+
+function getTranslateY(el) {
+    let style = window.getComputedStyle(el)
+    let matrix = new WebKitCSSMatrix(style.transform)
+    return matrix.m42
+}
+
+function setScaleY(el) {
+    let style = window.getComputedStyle(el)
+    let matrix = new WebKitCSSMatrix(style.transform)
+    return matrix.d
+}
+
+function computeTranslateY(currentScale, el) {
+    if(getScaleY(el) > 1)
+      newTranslate = currentScale/(maxScale-minScale)*(maxHeight-minHeight)
+    else  
+      newTranslate = getTranslateY(el)
+    return newTranslate 
 }
